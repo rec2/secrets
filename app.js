@@ -4,6 +4,7 @@ const bodyParse = require("body-parser");
 const ejs = require("ejs");
 const app = express();
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 
 app.use(express.static("public"));
 app.set("view engine" , "ejs");
@@ -17,10 +18,14 @@ mongoose.connect("mongodb://localhost:27017/userDB", {
 
 
 // Schema and model
-const userSchema = {
+const userSchema = mongoose.Schema({
     email: String,
     password: String
-}
+});
+
+// use conveient method
+const secret = "Thisisourlittlesecret";
+userSchema.plugin(encrypt, {secret : secret, encryptedFields: ['password']});
 
 const User = mongoose.model("User", userSchema);
 
