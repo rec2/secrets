@@ -1,17 +1,16 @@
 //jshint esversion:6
-require("dotenv").config();
+require('dotenv').config();
 const express = require("express");
 const bodyParse = require("body-parser");
 const ejs = require("ejs");
 const app = express();
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
+const test = process.env.SECRET;
 
 app.use(express.static("public"));
 app.set("view engine" , "ejs");
 app.use(bodyParse.urlencoded({extended: true}));
-
-console.log(process.env.SECRET);
-
 
 mongoose.connect("mongodb://localhost:27017/userDB", {
     useNewUrlParser: true,
@@ -20,15 +19,15 @@ mongoose.connect("mongodb://localhost:27017/userDB", {
 
 
 // Schema and model
-const userSchema = {
+const userSchema = mongoose.Schema({
     email: String,
     password: String
-}
+});
+
+// use conveient method
+userSchema.plugin(encrypt, {secret : test, encryptedFields: ['password']});
 
 const User = mongoose.model("User", userSchema);
-
-
-
 
 app.route("/") 
     .get(function(req,res) {
