@@ -1,15 +1,19 @@
 //jshint esversion:6
+require('dotenv').config();
 const express = require("express");
 const bodyParse = require("body-parser");
 const ejs = require("ejs");
 const app = express();
 const mongoose = require("mongoose");
 const encrypt = require("mongoose-encryption");
+<<<<<<< HEAD
+=======
+const test = process.env.SECRET;
+>>>>>>> environmentVariables
 
 app.use(express.static("public"));
 app.set("view engine" , "ejs");
 app.use(bodyParse.urlencoded({extended: true}));
-
 
 mongoose.connect("mongodb://localhost:27017/userDB", {
     useNewUrlParser: true,
@@ -22,6 +26,7 @@ const userSchema = mongoose.Schema({
     email: String,
     password: String
 });
+<<<<<<< HEAD
 
 // use conveient method
 const secret = "Thisisourlittlesecret";
@@ -29,8 +34,13 @@ userSchema.plugin(encrypt, {secret : secret, encryptedFields: ['password']});
 
 const User = mongoose.model("User", userSchema);
 
+=======
+>>>>>>> environmentVariables
 
+// use conveient method
+userSchema.plugin(encrypt, {secret : test, encryptedFields: ['password']});
 
+const User = mongoose.model("User", userSchema);
 
 app.route("/") 
     .get(function(req,res) {
