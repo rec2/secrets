@@ -5,11 +5,7 @@ const bodyParse = require("body-parser");
 const ejs = require("ejs");
 const app = express();
 const mongoose = require("mongoose");
-const encrypt = require("mongoose-encryption");
-<<<<<<< HEAD
-=======
-const test = process.env.SECRET;
->>>>>>> environmentVariables
+const md5 = require("md5");
 
 app.use(express.static("public"));
 app.set("view engine" , "ejs");
@@ -26,19 +22,6 @@ const userSchema = mongoose.Schema({
     email: String,
     password: String
 });
-<<<<<<< HEAD
-
-// use conveient method
-const secret = "Thisisourlittlesecret";
-userSchema.plugin(encrypt, {secret : secret, encryptedFields: ['password']});
-
-const User = mongoose.model("User", userSchema);
-
-=======
->>>>>>> environmentVariables
-
-// use conveient method
-userSchema.plugin(encrypt, {secret : test, encryptedFields: ['password']});
 
 const User = mongoose.model("User", userSchema);
 
