@@ -8,7 +8,9 @@ const session = require('express-session');
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const findOrCreate = require("mongoose-findorcreate");
+
 
 const app = express();
 
@@ -19,7 +21,7 @@ app.use(bodyParse.urlencoded({
 }));
 
 // always place before coonnetcion ***
-// initial configs
+// initial configs to allow cookies
 app.use(session({
     secret: "Our little secret.",
     resave: false,
@@ -39,9 +41,10 @@ mongoose.set("useCreateIndex", true);
 
 // Schema and model
 const userSchema = new mongoose.Schema({
-    email: String,
-    password: String,
-    googleId : String
+    email : String,
+    password : String,
+    googleId : String,
+    faceBookId : String
 });
 
 //passport local monggose plugin
@@ -65,8 +68,11 @@ passport.serializeUser(function(user, done) {
       done(err, user);
     });
   });
+  
+// use to iniitialize Face Strategy 
 
-// use to initialize strategy
+
+// use to initialize Google strategy
 passport.use(new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -81,6 +87,8 @@ passport.use(new GoogleStrategy({
         });
     }
 ));
+
+
 
 app.route("/")
     .get(function (req, res) {
