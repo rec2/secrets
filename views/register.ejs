@@ -1,4 +1,6 @@
 <%- include('partials/header') %>
+
+
 <div class="container mt-5">
   <h1>Register</h1>
 
@@ -30,6 +32,18 @@
           <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
             <i class="fab fa-google"></i>
             Sign Up with Google
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="card social-block">
+        <div class="card-body">
+          <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+          </fb:login-button>
+          <i class="fab fa-google"></i>
+          Sign Up with Facebook
           </a>
         </div>
       </div>

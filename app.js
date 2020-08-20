@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
     email : String,
     password : String,
     googleId : String,
-    faceBookId : String
+    secret : {}
 });
 
 //passport local monggose plugin
@@ -88,13 +88,12 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-
-
 app.route("/")
     .get(function (req, res) {
         res.render("home");
     });
 
+// Google Authorization
 app.get("/auth/google",
     passport.authenticate("google", {
         scope: ["profile"]
@@ -109,6 +108,7 @@ app.get("/auth/google/secrets",
         res.redirect('/secrets');
     });
 
+// Login Route
 app.route("/login")
     .get(function (req, res) {
         res.render("login");
@@ -131,11 +131,13 @@ app.route("/login")
         });
     });
 
+// Logout 
 app.get("/logout", function (req, res) {
     req.logOut();
     res.redirect("/");
 });
 
+// Register
 app.route("/register")
     .get(function (req, res) {
         res.render("register");
@@ -156,14 +158,47 @@ app.route("/register")
         });
     })
 
+
+// Secrets
 app.route("/secrets")
     .get(function (req, res) {
+        // find users with secerts property that are not null
+        User.find({"secret" : {$ne : null}}, function(err, foundUsers){
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("secrets", {usersWithSecrets: foundUsers});
+            }
+        })
+    });
+
+// Submit
+app.route("/submit")
+    .get(function (req, res) {
         if (req.isAuthenticated()) {
-            res.render("secrets");
+            res.render("submit");
         } else {
             res.redirect("/login");
         }
+    })
+    .post(function (req,res) {
+        const submittedSecret = req.body.secret;
+
+        // Find a user that matches USER.ID and add secret to their object
+        User.findById(req.user.id, function(err, foundUser) {
+            if (err) {
+                console.log(err);
+            } else {
+                if (foundUser) {
+                    foundUser.secret = submittedSecret;
+                    foundUser.save(function() {
+                        res.redirect("/secrets");
+                    })
+                }
+            }
+        })
     });
+
 
 app.listen(3000, function () {
     console.log("Server up and running on port 3000");
